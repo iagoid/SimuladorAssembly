@@ -105,9 +105,7 @@ public class LeitorDeInstrucoes extends Simulador {
             valorSreg = this.sreg.get(parseInt(posicao));
         }
         if (valorSreg == 1) {
-            System.out.println("****" + this.Cl);
             this.Cl++;
-            System.out.println("+++++++" + this.Cl);
         }
     }
 

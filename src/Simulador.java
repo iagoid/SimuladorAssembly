@@ -34,11 +34,11 @@ public class Simulador {
         System.out.println("Ri " + this.Ri);
         System.out.println("Banco de registradores");
         for (int i = 0; i < bancoDeRegistradores.size(); i++) {
-            System.out.println("R" + i + " " + bancoDeRegistradores.get(i));
+            System.out.println("\tR" + i + " " + bancoDeRegistradores.get(i));
         }
         System.out.println("Sreg");
         for (int i = 0; i < sreg.size(); i++) {
-            System.out.println(i + " " + sreg.get(i));
+            System.out.println("\t" + i + " " + sreg.get(i));
         }
     }
 }
