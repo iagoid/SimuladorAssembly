@@ -24,19 +24,19 @@ public class LeitorDeInstrucoes extends Simulador {
                 instrucaoSeparada[2] = utils.replaceString(instrucaoSeparada[2]);
                 valorOrigem = parseInt(instrucaoSeparada[2]);
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
         }
 
 
         switch (instrucaoSeparada[0]) {
             case "LD":
+                LD(destino,valorOrigem);
                 break;
             case "MOV":
                 MOV(destino, valorOrigem);
                 break;
             case "ST":
-
+                ST(destino, valorOrigem);
                 break;
             case "ADD":
                 ADD(destino, valorOrigem);
@@ -45,10 +45,10 @@ public class LeitorDeInstrucoes extends Simulador {
                 DEC(destino);
                 break;
             case "INC":
-
+                INC(destino);
                 break;
             case "SUB":
-
+                SUB(destino,valorOrigem);
                 break;
             case "GOTO":
                 GOTO(destino);
@@ -56,7 +56,6 @@ public class LeitorDeInstrucoes extends Simulador {
             case "SBRS":
                 SBRS(instrucaoSeparada[1], instrucaoSeparada[2]);
                 break;
-
             case "BSET":
 
                 break;
@@ -72,6 +71,28 @@ public class LeitorDeInstrucoes extends Simulador {
                 break;
         }
 
+    }
+    public void LD(int destino, int valorOrigem){
+        this.bancoDeRegistradores.set(destino,valorOrigem);
+    }
+    public void ST(int destino, int valorOrigem){
+        this.bancoDeRegistradores.set(destino,valorOrigem);
+    }
+    public void SUB(int destino, int valorOrigem){
+        int valorDestino = bancoDeRegistradores.get(destino);
+        valorDestino = valorDestino - valorOrigem;
+        this.bancoDeRegistradores.set(destino, valorDestino);
+       if(valorDestino >= 0) {
+           zeroFlag(valorDestino);
+       }else if(valorDestino < 0){
+           negativeFlag(valorDestino);
+       }
+    }
+    public void INC(int destino){
+        int valorDestino = bancoDeRegistradores.get(destino);
+        valorDestino++;
+        this.bancoDeRegistradores.set(destino, valorDestino);
+        zeroFlag(valorDestino);
     }
 
     public void MOV(int destino, int valorOrigem) {
@@ -117,6 +138,11 @@ public class LeitorDeInstrucoes extends Simulador {
     public void zeroFlag(int resultadoOperacao){
         if(resultadoOperacao == 0){
             this.sreg.set(1, 1);
+        }
+    }
+    public void negativeFlag(int resultadoOperacao){
+        if(resultadoOperacao < 0){
+            this.sreg.set(2, 1);
         }
     }
 }

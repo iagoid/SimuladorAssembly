@@ -13,6 +13,10 @@ public class Principal {
         instrucoes.add("DEC R2");
         instrucoes.add("SBRS SREG, 1");
         instrucoes.add("GOTO 0x4");
+        //instrucoes.add("ST R3, R0");//instrucao teste
+        //instrucoes.add("INC R3");//instrucao teste
+       // instrucoes.add("SUB R1, R3");//instrucao teste
+
         instrucoes.add("HALT");
 
 
@@ -24,7 +28,7 @@ public class Principal {
             leitorDeInstrucoes.verificaInstrucao(instrucao);
             System.out.println("---------------" + instrucao  + "--------------");
             leitorDeInstrucoes.imprime();
-            Thread.sleep(1400);
+            Thread.sleep(500);
         }
     }
 }
