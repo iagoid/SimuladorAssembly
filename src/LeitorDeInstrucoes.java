@@ -56,8 +56,11 @@ public class LeitorDeInstrucoes extends Simulador {
             case "SBRS":
                 SBRS(instrucaoSeparada[1], instrucaoSeparada[2]);
                 break;
+            case "SBRC":
+                SBRC (instrucaoSeparada[1], instrucaoSeparada[2]);
+                break;
             case "BSET":
-
+                BSET(destino);
                 break;
             case "BCLR":
                 BCLR(destino);
@@ -71,6 +74,22 @@ public class LeitorDeInstrucoes extends Simulador {
                 break;
         }
 
+    }
+    public void SBRC(String local, String posicao) {
+        int valorSreg;
+        if (local.equals("SREG")) {
+            valorSreg = this.sreg.get(parseInt(posicao));
+        } else {
+            posicao = utils.replaceString(posicao);
+            valorSreg = this.sreg.get(parseInt(posicao));
+        }
+        if (valorSreg == 0) {
+            this.Cl++;
+        }
+    }
+
+    public void BSET(int posicaoSreg){
+        this.sreg.set(posicaoSreg,1);
     }
     public void LD(int destino, int valorOrigem){
         this.bancoDeRegistradores.set(destino,valorOrigem);
