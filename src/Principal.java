@@ -24,7 +24,7 @@ public class Principal {
             leitorDeInstrucoes.verificaInstrucao(instrucao);
             System.out.println("---------------" + instrucao  + "--------------");
             leitorDeInstrucoes.imprime();
-            Thread.sleep(1500);
+            Thread.sleep(1400);
         }
     }
 }
