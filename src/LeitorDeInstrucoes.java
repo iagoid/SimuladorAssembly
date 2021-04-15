@@ -11,16 +11,20 @@ public class LeitorDeInstrucoes extends Simulador {
 
 
         try {
-            instrucaoSeparada[1] = utils.replaceString(instrucaoSeparada[1]);
-            destino = parseInt(instrucaoSeparada[1]);
-        } catch (Exception e) { }
+            if (!instrucaoSeparada[1].startsWith("(")) {
+                instrucaoSeparada[1] = utils.replaceString(instrucaoSeparada[1]);
+                destino = parseInt(instrucaoSeparada[1]);
+            }
+        } catch (Exception e) {}
 
 
         try {
             if (instrucaoSeparada[2].contains("R")) {
+                // Pega o valor no registrador
                 instrucaoSeparada[2] = utils.replaceString(instrucaoSeparada[2]);
                 valorOrigem = bancoDeRegistradores.get(parseInt(instrucaoSeparada[2]));
             } else {
+                // Pega apenar o valor fixo
                 instrucaoSeparada[2] = utils.replaceString(instrucaoSeparada[2]);
                 valorOrigem = parseInt(instrucaoSeparada[2]);
             }
@@ -30,13 +34,13 @@ public class LeitorDeInstrucoes extends Simulador {
 
         switch (instrucaoSeparada[0]) {
             case "LD":
-                LD(destino,valorOrigem);
+                LD(destino, instrucaoSeparada[1]);
                 break;
             case "MOV":
                 MOV(destino, valorOrigem);
                 break;
             case "ST":
-                ST(destino, valorOrigem);
+                ST(instrucaoSeparada[1], valorOrigem);
                 break;
             case "ADD":
                 ADD(destino, valorOrigem);
@@ -48,7 +52,7 @@ public class LeitorDeInstrucoes extends Simulador {
                 INC(destino);
                 break;
             case "SUB":
-                SUB(destino,valorOrigem);
+                SUB(destino, valorOrigem);
                 break;
             case "GOTO":
                 GOTO(destino);
@@ -57,14 +61,13 @@ public class LeitorDeInstrucoes extends Simulador {
                 SBRS(instrucaoSeparada[1], instrucaoSeparada[2]);
                 break;
             case "SBRC":
-                SBRC (instrucaoSeparada[1], instrucaoSeparada[2]);
+                SBRC(instrucaoSeparada[1], instrucaoSeparada[2]);
                 break;
             case "BSET":
                 BSET(destino);
                 break;
             case "BCLR":
                 BCLR(destino);
-
                 break;
             case "HALT":
 
@@ -75,6 +78,7 @@ public class LeitorDeInstrucoes extends Simulador {
         }
 
     }
+
     public void SBRC(String local, String posicao) {
         int valorSreg;
         if (local.equals("SREG")) {
@@ -88,26 +92,54 @@ public class LeitorDeInstrucoes extends Simulador {
         }
     }
 
-    public void BSET(int posicaoSreg){
-        this.sreg.set(posicaoSreg,1);
+    public void BSET(int posicaoSreg) {
+        this.sreg.set(posicaoSreg, 1);
     }
-    public void LD(int destino, int valorOrigem){
-        this.bancoDeRegistradores.set(destino,valorOrigem);
+
+    public void LD(int destino, String valorOrigem) {
+        int valor;
+        if (valorOrigem.contains("R")) {
+            // Pega o valor do Registrador e então na memória principal
+            valorOrigem = utils.replaceString(valorOrigem);
+            int valorRegistrador = this.bancoDeRegistradores.get(parseInt(valorOrigem));
+            valor = parseInt(this.memoriaPrincipal.get(valorRegistrador));
+        } else {
+            // Pega direto na memória principal
+            valorOrigem = utils.replaceString(valorOrigem);
+            valor = parseInt(this.memoriaPrincipal.get(parseInt(valorOrigem)));
+        }
+
+        this.bancoDeRegistradores.set(destino, valor);
     }
-    public void ST(int destino, int valorOrigem){
-        this.bancoDeRegistradores.set(destino,valorOrigem);
+
+    public void ST(String destino, int valorOrigem) {
+        int valor;
+        if (destino.contains("R")) {
+            // Pega o valor do Registrador e então na memória principal
+            destino = utils.replaceString(destino);
+            int valorRegistrador = this.bancoDeRegistradores.get(parseInt(destino));
+            valor = parseInt(this.memoriaPrincipal.get(valorRegistrador));
+        } else {
+            // Pega direto na memória principal
+            destino = utils.replaceString(destino);
+            valor = parseInt(this.memoriaPrincipal.get(parseInt(destino)));
+        }
+
+        this.bancoDeRegistradores.set(valor, valorOrigem);
     }
-    public void SUB(int destino, int valorOrigem){
+
+    public void SUB(int destino, int valorOrigem) {
         int valorDestino = bancoDeRegistradores.get(destino);
         valorDestino = valorDestino - valorOrigem;
         this.bancoDeRegistradores.set(destino, valorDestino);
-       if(valorDestino >= 0) {
-           zeroFlag(valorDestino);
-       }else if(valorDestino < 0){
-           negativeFlag(valorDestino);
-       }
+        if (valorDestino >= 0) {
+            zeroFlag(valorDestino);
+        } else if (valorDestino < 0) {
+            negativeFlag(valorDestino);
+        }
     }
-    public void INC(int destino){
+
+    public void INC(int destino) {
         int valorDestino = bancoDeRegistradores.get(destino);
         valorDestino++;
         this.bancoDeRegistradores.set(destino, valorDestino);
@@ -154,13 +186,14 @@ public class LeitorDeInstrucoes extends Simulador {
     }
 
 
-    public void zeroFlag(int resultadoOperacao){
-        if(resultadoOperacao == 0){
+    public void zeroFlag(int resultadoOperacao) {
+        if (resultadoOperacao == 0) {
             this.sreg.set(1, 1);
         }
     }
-    public void negativeFlag(int resultadoOperacao){
-        if(resultadoOperacao < 0){
+
+    public void negativeFlag(int resultadoOperacao) {
+        if (resultadoOperacao < 0) {
             this.sreg.set(2, 1);
         }
     }

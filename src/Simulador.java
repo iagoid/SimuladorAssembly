@@ -7,6 +7,7 @@ public class Simulador {
     public int Z;
     public int Cl = 0;
     public int Ri;
+    public ArrayList<String> memoriaPrincipal = new ArrayList<>();
     public ArrayList<Integer> sreg = new ArrayList<>();
     public ArrayList<Integer> bancoDeRegistradores = new ArrayList<>();
 
@@ -27,6 +28,9 @@ public class Simulador {
         this.Ri = this.Cl;
     }
 
+    public void addInstrucao(String instrucao){
+        this.memoriaPrincipal.add(instrucao);
+    }
 
     public void imprime() {
         System.out.println("Z " + this.Z);
