@@ -1,24 +1,43 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Principal {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
         LeitorDeInstrucoes leitorDeInstrucoes = new LeitorDeInstrucoes();
 
+        // Pega o diretorio
+        File diretorio = new File (".") ;
+        String nome = diretorio.getCanonicalPath() + "\\src\\instrucoes.txt";
 
-        leitorDeInstrucoes.addInstrucao("BCLR 1");
-        leitorDeInstrucoes.addInstrucao("MOV R0, #0");
-        leitorDeInstrucoes.addInstrucao("MOV R1, #3");
-        leitorDeInstrucoes.addInstrucao("MOV R2, #2");
-        leitorDeInstrucoes.addInstrucao("ADD R0, R1");
-        leitorDeInstrucoes.addInstrucao("DEC R2");
-        leitorDeInstrucoes.addInstrucao("SBRS SREG, 1");
-        leitorDeInstrucoes.addInstrucao("GOTO 0x4");
-        // leitorDeInstrucoes.addInstrucao("ST (R3), R0");//instrucao teste(armazenar um numero na posicao 0 das instruções)
-        //leitorDeInstrucoes.addInstrucao("INC R3");//instrucao teste
-        //leitorDeInstrucoes.addInstrucao("SUB R1, R3");//instrucao teste
 
-        leitorDeInstrucoes.addInstrucao("HALT");
+        // Lê o TXT e adiciona as instruções para a memoria principal
+        try {
+            FileReader arq = new FileReader(nome);
+            BufferedReader lerArq = new BufferedReader(arq);
 
+            String linha = lerArq.readLine(); // lê a primeira linha
+            System.out.println("Código Assembly\n");
+            while (linha != null) {
+                System.out.println(linha);
+                leitorDeInstrucoes.addInstrucao(linha);
+                linha = lerArq.readLine(); // lê da segunda até a última linha
+            }
+
+            arq.close();
+        } catch (IOException e) {
+            System.err.printf("Erro na abertura do arquivo: %s.\n",
+                    e.getMessage());
+        }
+
+
+        // Executa as instruções
+        Scanner ler = new Scanner(System.in);
+        System.out.println("\n\nDeseja executar o debug? S = Sim | Outra tecla = Não ");
+        String debug = ler.next();
 
         String instrucao = "";
         while (!instrucao.equals("HALT")) {
@@ -26,9 +45,12 @@ public class Principal {
             instrucao = leitorDeInstrucoes.memoriaPrincipal.get(leitorDeInstrucoes.Ri);
             leitorDeInstrucoes.atualizaCl();
             leitorDeInstrucoes.verificaInstrucao(instrucao);
-            System.out.println("---------------" + instrucao  + "--------------");
-            leitorDeInstrucoes.imprime();
-            Thread.sleep(0);
+            if(debug.equals("s") || debug.equals("S") || instrucao.equals("HALT")){
+                System.out.println();
+                System.out.println("\n\n---------------" + instrucao  + "--------------");
+                leitorDeInstrucoes.imprime();
+            }
+            Thread.sleep(500);
         }
     }
 }
